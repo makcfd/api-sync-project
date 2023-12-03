@@ -24,7 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-qbpagrf5oc8l_@#s$+27r=l(r0fekjsollavh3k85pnx$i73))"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# TODO Change DB on DEBUG
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -139,7 +140,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
-    # "TEST_REQUEST_DEFAULT_FORMAT": "json",
+    "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }
 
 

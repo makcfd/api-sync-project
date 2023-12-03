@@ -4,13 +4,37 @@ from rest_framework.test import APITestCase
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
+from ..models import Post
 
 User = get_user_model()
 
 
+# TODO
+# test long/bing  creations
+# test that user is default after creating
+
+
 class PostsAPITests(APITestCase):
-    url_list = reverse("posts-list")
-    url_detail = reverse("posts-detail", kwargs={"pk": 101})
+    @classmethod
+    def setUpClass(cls):
+        """Fixtures for the tests."""
+        super().setUpClass()
+        OBJECT_ID = 1
+        cls.url_list = reverse("posts-list")
+        cls.url_detail = reverse(
+            "posts-detail",
+            kwargs={"pk": OBJECT_ID},
+        )
+
+        cls.bulk_list = list()
+        for i in range(3):
+            cls.bulk_list.append(
+                Post(
+                    title=f"Title {i}",
+                    body=f"Description of post {i}",
+                )
+            )
+        Post.objects.bulk_create(cls.bulk_list)
 
     def setUp(self):
         self.user = User.objects.create_user(
@@ -26,69 +50,83 @@ class PostsAPITests(APITestCase):
             "title": "Amazing post",
             "body": "Something about post",
         }
+        self.num_posts_init = Post.objects.all().count()
 
-    def test_get_list_no_auth(self):
+    def test_get_posts_list_no_auth(self):
+        """Getting 401 if not authenticated."""
         self.client.force_authenticate(user=None, token=None)
         response = self.client.get(self.url_list)
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_401_UNAUTHORIZED,
-            # TODO what is response data here
-            # response.data,
-        )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_get_list(self):
+    def test_get_posts_list(self):
+        """Correct status and number of posts retrived."""
+        num_posts_init = Post.objects.all().count()
         response = self.client.get(self.url_list)
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_200_OK,
-        )
+        num_post_resp = len(response.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(num_post_resp, num_posts_init)
 
-    def test_post_new_post_auth(self):
-        response = self.client.post(
-            self.url_list,
-            self.data,
-            format="json",
-        )
+    def test_post_new_posts_auth(self):
+        """New post created correctly."""
+        response = self.client.post(self.url_list, self.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data.get("title"), self.data.get("title"))
+        self.assertEqual(response.data.get("body"), self.data.get("body"))
+        self.assertEqual(response.data.get("user"), settings.DEFAULT_USER_ID)
 
-    def test_get_detailed_auth(self):
-        # First, create a new post
-        post_response = self.client.post(
-            self.url_list,
-            self.data,
-            format="json",
-        )
-        # Ensure the post was created successfully
+    def test_post_new_posts_no_auth(self):
+        """Unautheticated attempt of post creation fails."""
+        self.client.force_authenticate(user=None, token=None)
+        response = self.client.post(self.url_list, self.data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_detailed_after_post_auth(self):
+        """Succusfully retrive object after calling POST."""
+        post_response = self.client.post(self.url_list, self.data)
         self.assertEqual(post_response.status_code, status.HTTP_201_CREATED)
 
-        # Get the ID of the newly created post
         post_id = post_response.data["id"]
         detail_url = reverse("posts-detail", kwargs={"pk": post_id})
 
-        # Now, try to retrieve the newly created post
         response = self.client.get(detail_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    # TODO checking response data
-    # https://www.django-rest-framework.org/api-guide/testing/#checking-the-response-data
-    # self.assertEqual(response.data["body"], "Something about post")
-    # self.assertEqual(response.data["user"], settings.DEFAULT_USER_ID)
+    def test_delete_auth(self):
+        """Successfully delete post authenticated."""
+        response = self.client.get(self.url_detail)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    # def test_userprofile_with_update_without_passing_query_params(self):
-    #     data_update = {"name": "test", "email": "test@12.com", "bio": "hello"}
-    #     resp = self.client.patch(f"{self.user_profile}?", data_update)
-    #     self.assertEqual(resp.status_code, 400)
+    def test_delete_no_auth(self):
+        """Fail to delete post unauthenticated."""
+        self.client.force_authenticate(user=None, token=None)
+        response = self.client.get(self.url_detail)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    # def test_get_detail_no_auth(self):
-    #     response = self.client.get(self.url)
-    #     self.assertEqual(
-    #         response.status_code, status.HTTP_401_UNAUTHORIZED, response.data
-    #     )
+    def test_partially_update_post_auth(self):
+        """A post title patched correctly."""
+        data = {"title": "Patch is ready"}
+        response = self.client.patch(self.url_detail, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.get("title"), data.get("title"))
 
-    # def test_get_detail(self):
-    #     response = self.client.get(self.url_detail, **self.bearer_token)
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    # def test_delete_customer_authenticated(self):
-    #     response = self.client.delete(self.url_detail)
-    #     self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT,)
+    def test_partially_update_post_no_auth(self):
+        """An unauthenticated post patch fails."""
+        self.client.force_authenticate(user=None, token=None)
+        data = {"title": "Patch is ready"}
+        response = self.client.patch(self.url_detail, data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_full_post_update_auth(self):
+        """A post updated correctly."""
+        data = {"title": "Update is ready", "body": "Let's update it"}
+        response = self.client.put(self.url_detail, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.get("title"), data.get("title"))
+        self.assertEqual(response.data.get("body"), data.get("body"))
+
+    def test_full_post_update_no_auth(self):
+        """An unauthenticated post update fails."""
+        self.client.force_authenticate(user=None, token=None)
+        data = {"title": "Update is ready", "body": "Let's update it"}
+        response = self.client.put(self.url_detail, data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

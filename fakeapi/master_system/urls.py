@@ -7,7 +7,8 @@ router = SimpleRouter()
 
 router.register("api/v1/posts", PostViewSet, basename="posts")
 router.register("api/v1/posts/<int:pk>", PostViewSet)
-
+router.register("api/v1/comments", PostViewSet, basename="posts")
+router.register("api/v1/comments/<int:pk>", PostViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),

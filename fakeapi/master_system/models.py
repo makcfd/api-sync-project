@@ -1,17 +1,12 @@
-from django.contrib.auth import get_user_model
 from django.db import models
 
 from django.conf import settings
 
-# create user with specific id and link it to the Post and Comments
-# User = get_user_model()
-
-POST_LENGTH = 10
-
 
 class Post(models.Model):
-    """Model fro Post object"""
+    """Model for Post object."""
 
+    # TODO make max length
     title = models.TextField(
         verbose_name="Title of the post",
         help_text="Enter post title",
@@ -20,7 +15,6 @@ class Post(models.Model):
         verbose_name="Body of the post",
         help_text="Enter post text",
     )
-    # TODO move defaul value to config or settings
     user = models.IntegerField(
         default=settings.DEFAULT_USER_ID,
         verbose_name="user",
@@ -32,12 +26,13 @@ class Post(models.Model):
         ordering = ("id",)
 
     def __str__(self):
-        return self.body[:POST_LENGTH]
+        return self.body[: settings.POST_LENGTH]
 
 
 class Comment(models.Model):
-    """Model for Comment object"""
+    """Model for Comment object."""
 
+    # TODO make max length
     name = models.TextField()
     email = models.EmailField()
     body = models.TextField(
@@ -56,4 +51,4 @@ class Comment(models.Model):
         ordering = ("id",)
 
     def __str__(self):
-        return self.body[:POST_LENGTH]
+        return self.body[: settings.POST_LENGTH]

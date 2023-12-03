@@ -25,13 +25,13 @@ docker build -t fakeapi_service .
 docker run --name fakeapi_service_container --rm -p 8000:8000 fakeapi_service
 ```
 
-
-
-
-### Limitations
+### Limitations and assumptions
 
 1. No restrictions to change other user's content as it was defined in the original task: "The user_id for the new posts created is always 99999942 since we don’t implement the user model.".
-2. 
+2. CRUD operations are GET, POST, PUT, PATCH, DELETE
+3. No need for Nginx and gunicorn
+4. DEBUG to True to see errors
+
 
 ## Tasks
 
@@ -67,7 +67,6 @@ Create a Rest API to manage that data in those models.
 - [ ] Secrets into env file
 - [x] The user_id for the new posts created is always 99999942 since we don’t implement the user model.
 - [x] Provide users authentication and request authorization through Bearer Token.
-
 - [ ] Synchronize both systems. The system you are implementing is the MASTER. You can decide how and when this synchronization will be done. 
 - [ ] Please write a README to specify how it can be triggered.
 - [ ] We prefer a tested and well documented task than a quick one.
