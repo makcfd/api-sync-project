@@ -14,7 +14,7 @@ git clone git@github.com:makcfd/sync-api-project.git
 ```
 - Go to the infra folder:
 ```
-cd infra
+cd api-sync-project/infra
 ```
 - Build the services
 ```
@@ -28,7 +28,7 @@ docker-compose exec backend python manage.py makemigrations
 docker-compose exec backend python manage.py migrate
 ```
 ```
-docker-compose exec backend python manage.py createsuperuser --noinput --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL
+docker-compose exec backend python manage.py createsuperuser --noinput
 ```
 - Load data
 ```
@@ -48,6 +48,26 @@ docker-compose exec backend python manage.py test master_system.test.test_posts_
 ```
 docker-compose exec backend python manage.py test master_system.test.test_comments_api
 ```
+
+### cUrl examples
+- Get Bearer token
+```
+curl -X POST http://127.0.0.1:8000/api/auth/jwt/create \
+   -H 'Content-Type: application/json' \
+   -d '{"username":"admin","password":"admin"}'
+```
+-Get posts:
+```
+curl -X GET http://127.0.0.1:8000/api/v1/posts/ -H 'Authorization: Bearer <YOUR TOKEN>'
+```
+- Create a new post:
+```
+curl -X POST http://127.0.0.1:8000/api/v1/posts/ \
+   -H 'Content-Type: application/json' \
+   -H 'Authorization: Bearer <YOUR TOKEN>' \
+   -d '{"title": "foo","body": "bar"}'
+```
+
 ### Links
 1. Project documentation available at the address: http://127.0.0.1/swagger/
 2. Admin panel is available at the address: http://127.0.0.1/admin/
