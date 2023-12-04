@@ -55,7 +55,7 @@ docker-compose exec backend python manage.py test master_system.test.test_commen
 curl -X POST http://127.0.0.1:8000/api/auth/jwt/create \
    -H 'Content-Type: application/json' \
    -d '{"username":"admin","password":"admin"}'
-```
+``` 
 -Get posts:
 ```
 curl -X GET http://127.0.0.1:8000/api/v1/posts/ -H 'Authorization: Bearer <YOUR TOKEN>'
