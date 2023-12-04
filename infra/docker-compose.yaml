@@ -1,4 +1,3 @@
-# add ports for backend gunicorn? 
 version: '3.3'
 services:
 

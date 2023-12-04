@@ -38,7 +38,6 @@ class PostModelTest(TestCase):
         field_verboses = {
             "title": "Title of the post",
             "body": "Body of the post",
-            "is_synced": "Post syncronization status",
         }
         for field, expected_value in field_verboses.items():
             with self.subTest(field=field):
@@ -51,7 +50,6 @@ class PostModelTest(TestCase):
         """Comment model has a verbose name."""
         group_field_verboses = {
             "body": "Body of the comment",
-            "is_synced": "Comment syncronization status",
         }
         for field, expected_value in group_field_verboses.items():
             with self.subTest(field=field):
@@ -65,7 +63,6 @@ class PostModelTest(TestCase):
         field_help_texts = {
             "title": "Enter post title",
             "body": "Enter post text",
-            "is_synced": "JSONPlaceholder syncronization status",
         }
         for field, expected_value in field_help_texts.items():
             with self.subTest(field=field):
@@ -77,7 +74,6 @@ class PostModelTest(TestCase):
         """Comment model help_text equals to expected."""
         field_help_texts = {
             "body": "Enter comment text",
-            "is_synced": "JSONPlaceholder syncronization status",
         }
         for field, expected_value in field_help_texts.items():
             with self.subTest(field=field):

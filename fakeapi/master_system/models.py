@@ -19,11 +19,6 @@ class Post(models.Model):
         default=settings.DEFAULT_USER_ID,
         verbose_name="user",
     )
-    is_synced = models.BooleanField(
-        verbose_name="Post syncronization status",
-        help_text="JSONPlaceholder syncronization status",
-        default=False,
-    )
 
     def json(self):
         return {
@@ -56,11 +51,6 @@ class Comment(models.Model):
         Post,
         on_delete=models.CASCADE,
         related_name="comments",
-    )
-    is_synced = models.BooleanField(
-        verbose_name="Comment syncronization status",
-        help_text="JSONPlaceholder syncronization status",
-        default=False,
     )
 
     def json(self):

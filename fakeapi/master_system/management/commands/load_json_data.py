@@ -38,7 +38,6 @@ class Command(BaseCommand):
                     Post(
                         title=object["title"],
                         body=object["body"],
-                        is_synced=True,
                     )
                 )
             elif "comments" in docname:
@@ -47,7 +46,6 @@ class Command(BaseCommand):
                         name=object["name"],
                         email=object["email"],
                         body=object["body"],
-                        is_synced=True,
                         postId=Post.objects.get(pk=object["postId"]),
                     )
                 )

@@ -9,8 +9,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = "django-insecure-qbpagrf5oc8l_@#s$+27r=l(r0fekjsollavh3k85pnx$i73))"
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = "django-insecure-qbpagrf5oc8l_@#s$+27r=l(r0fekjsollavh3k85pnx$i73))"
+# SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # TODO Change DB on DEBUG
@@ -66,22 +66,22 @@ WSGI_APPLICATION = "fakeapi.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
 DATABASES = {
     "default": {
-        "ENGINE": os.getenv("DB_ENGINE", default="django.db.backends.postgresql"),
-        "NAME": os.getenv("DB_NAME", default="postgres"),
-        "USER": os.getenv("POSTGRES_USER", default="postgres"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD", default="postgres"),
-        "HOST": os.getenv("DB_HOST", default="db"),
-        "PORT": os.getenv("DB_PORT", default="5432"),
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+# DATABASES = {
+#     "default": {
+#         "ENGINE": os.getenv("DB_ENGINE", default="django.db.backends.postgresql"),
+#         "NAME": os.getenv("DB_NAME", default="postgres"),
+#         "USER": os.getenv("POSTGRES_USER", default="postgres"),
+#         "PASSWORD": os.getenv("POSTGRES_PASSWORD", default="postgres"),
+#         "HOST": os.getenv("DB_HOST", default="db"),
+#         "PORT": os.getenv("DB_PORT", default="5432"),
+#     }
+# }
 
 
 # Password validation
@@ -126,7 +126,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Custom constant project settings
 DEFAULT_USER_ID = 99999942
 POST_LENGTH = 10
-BASE_JSON_PH_URL = "https://jsonplaceholder.typicode.com/posts"
+BASE_JSON_PH_URL = "https://jsonplaceholder.typicode.com/"
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [

@@ -9,11 +9,6 @@ from ..models import Post
 User = get_user_model()
 
 
-# TODO:
-# test long/bing  creations
-# test that user is default after creating
-
-
 class PostsAPITests(APITestCase):
     @classmethod
     def setUpClass(cls):
@@ -35,6 +30,8 @@ class PostsAPITests(APITestCase):
                 )
             )
         Post.objects.bulk_create(cls.bulk_list)
+
+        cls.data = {"title": "Amazing post", "body": "Something about post"}
         cls.new_data = {"title": "Update is ready", "body": "Let's update it"}
 
     def setUp(self):
@@ -47,10 +44,7 @@ class PostsAPITests(APITestCase):
         self.client.credentials(
             HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}",
         )
-        self.data = {
-            "title": "Amazing post",
-            "body": "Something about post",
-        }
+
         self.num_posts_init = Post.objects.all().count()
 
     def test_get_posts_list_no_auth(self):

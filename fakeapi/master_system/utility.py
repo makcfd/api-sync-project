@@ -1,11 +1,25 @@
-def synchronize_to_external_api(post, created=False, delete=False):
+from requests import request
+from django.conf import settings
+
+
+def synchronize_to_external_api(type, instance, created=False, delete=False):
+    base_url = (
+        settings.BASE_JSON_PH_URL + "posts"
+        if type == "post"
+        else settings.BASE_JSON_PH_URL + "comments"
+    )
+    url = base_url + "/" + str(instance.id)
     if delete:
-        # Perform DELETE synchronization logic
-        pass
+        response = request(
+            method="DELETE",
+            url=url,
+        )
     elif created:
-        # Perform POST synchronization logic
-        pass
+        response = request(
+            method="POST",
+            url=base_url,
+            data=instance.json(),
+        )
     else:
-        # Perform PUT synchronization logic
-        pass
-    # Handle response and errors
+        response = request(method="PUT", url=url, data=instance.json())
+    return response.status_code

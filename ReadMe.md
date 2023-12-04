@@ -17,6 +17,9 @@ For tests defaul unittests package is used. To run test execute command:
 python manage.py test;
 ```
 ```
+python manage.py test master_system.test.test_posts_api
+```
+```
 python manage.py test master_system.test.test_comments_api
 ```
 
