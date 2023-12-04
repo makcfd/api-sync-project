@@ -1,4 +1,3 @@
-from multiprocessing import synchronize
 from rest_framework import serializers
 
 from master_system.models import Post, Comment
@@ -6,20 +5,31 @@ from master_system.models import Post, Comment
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ("id", "title", "body")
+        fields = ("id", "title", "body", "user", "is_synced")
         model = Post
 
 
-# TODO: change mixin for this serializer
 class PostUpdateSerializer(serializers.ModelSerializer):
-    synch_status = serializers.SerializerMethodField(read_only=True)
-
     class Meta:
-        fields = ("id", "title", "body", "user")
+        fields = ("id", "title", "body", "user", "is_synced")
         model = Post
+
+    def update(self, instance, validated_data):
+        instance.is_synced = False
+        return super().update(instance, validated_data)
 
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ("id", "name", "email", "body")
+        fields = ("id", "name", "email", "body", "postId", "is_synced")
         model = Comment
+
+
+class CommentUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ("id", "name", "email", "body", "postId", "is_synced")
+        model = Comment
+
+    def update(self, instance, validated_data):
+        instance.is_synced = False
+        return super().update(instance, validated_data)

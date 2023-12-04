@@ -9,7 +9,7 @@ from ..models import Post
 User = get_user_model()
 
 
-# TODO
+# TODO:
 # test long/bing  creations
 # test that user is default after creating
 
@@ -35,6 +35,7 @@ class PostsAPITests(APITestCase):
                 )
             )
         Post.objects.bulk_create(cls.bulk_list)
+        cls.new_data = {"title": "Update is ready", "body": "Let's update it"}
 
     def setUp(self):
         self.user = User.objects.create_user(
@@ -91,15 +92,15 @@ class PostsAPITests(APITestCase):
         response = self.client.get(detail_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_delete_auth(self):
+    def test_delete_post_auth(self):
         """Successfully delete post authenticated."""
-        response = self.client.get(self.url_detail)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.delete(self.url_detail)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_delete_no_auth(self):
+    def test_delete_post_no_auth(self):
         """Fail to delete post unauthenticated."""
         self.client.force_authenticate(user=None, token=None)
-        response = self.client.get(self.url_detail)
+        response = self.client.delete(self.url_detail)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_partially_update_post_auth(self):
@@ -118,15 +119,16 @@ class PostsAPITests(APITestCase):
 
     def test_full_post_update_auth(self):
         """A post updated correctly."""
-        data = {"title": "Update is ready", "body": "Let's update it"}
-        response = self.client.put(self.url_detail, data)
+        response = self.client.put(self.url_detail, self.new_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data.get("title"), data.get("title"))
-        self.assertEqual(response.data.get("body"), data.get("body"))
+        self.assertEqual(
+            response.data.get("title"),
+            self.new_data.get("title"),
+        )
+        self.assertEqual(response.data.get("body"), self.new_data.get("body"))
 
     def test_full_post_update_no_auth(self):
         """An unauthenticated post update fails."""
         self.client.force_authenticate(user=None, token=None)
-        data = {"title": "Update is ready", "body": "Let's update it"}
-        response = self.client.put(self.url_detail, data)
+        response = self.client.put(self.url_detail, self.new_data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

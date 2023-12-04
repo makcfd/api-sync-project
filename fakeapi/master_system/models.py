@@ -6,10 +6,10 @@ from django.conf import settings
 class Post(models.Model):
     """Model for Post object."""
 
-    # TODO make max length
     title = models.TextField(
         verbose_name="Title of the post",
         help_text="Enter post title",
+        max_length=200,
     )
     body = models.TextField(
         verbose_name="Body of the post",
@@ -19,6 +19,18 @@ class Post(models.Model):
         default=settings.DEFAULT_USER_ID,
         verbose_name="user",
     )
+    is_synced = models.BooleanField(
+        verbose_name="Post syncronization status",
+        help_text="JSONPlaceholder syncronization status",
+        default=False,
+    )
+
+    def json(self):
+        return {
+            "title": self.title,
+            "body": self.body,
+            "user": self.user,
+        }
 
     class Meta:
         verbose_name = "post"
@@ -32,18 +44,32 @@ class Post(models.Model):
 class Comment(models.Model):
     """Model for Comment object."""
 
-    # TODO make max length
-    name = models.TextField()
+    name = models.TextField(
+        max_length=200,
+    )
     email = models.EmailField()
     body = models.TextField(
         verbose_name="Body of the comment",
         help_text="Enter comment text",
     )
-    post = models.ForeignKey(
+    postId = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
         related_name="comments",
     )
+    is_synced = models.BooleanField(
+        verbose_name="Comment syncronization status",
+        help_text="JSONPlaceholder syncronization status",
+        default=False,
+    )
+
+    def json(self):
+        return {
+            "name": self.name,
+            "body": self.body,
+            "email": self.email,
+            "postId": self.postId,
+        }
 
     class Meta:
         verbose_name = "comment"

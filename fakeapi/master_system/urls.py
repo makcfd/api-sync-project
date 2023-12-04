@@ -1,15 +1,13 @@
-from rest_framework.routers import SimpleRouter
+from rest_framework.routers import DefaultRouter
 from django.urls import include, path
 
-from master_system.views import PostViewSet
+from master_system.views import PostViewSet, CommentViewSet
 
-router = SimpleRouter()
+router = DefaultRouter()
 
-router.register("api/v1/posts", PostViewSet, basename="posts")
-router.register("api/v1/posts/<int:pk>", PostViewSet)
-router.register("api/v1/comments", PostViewSet, basename="posts")
-router.register("api/v1/comments/<int:pk>", PostViewSet)
+router.register("posts", PostViewSet, basename="posts")
+router.register("comments", CommentViewSet, basename="comments")
 
 urlpatterns = [
-    path("", include(router.urls)),
+    path("v1/", include(router.urls)),
 ]

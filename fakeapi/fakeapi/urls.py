@@ -8,10 +8,10 @@ from drf_yasg import openapi
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("master_system.urls")),
-    path("auth/", include("djoser.urls")),
+    path("api/", include("master_system.urls")),
+    path("api/auth/", include("djoser.urls")),
     # JWT-endpoints, to manage JWT-tokens:
-    path("auth/", include("djoser.urls.jwt")),
+    path("api/auth/", include("djoser.urls.jwt")),
 ]
 
 
@@ -37,6 +37,8 @@ urlpatterns += [
         name="schema-swagger-ui",
     ),
     url(
-        r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
+        r"^redoc/$",
+        schema_view.with_ui("redoc", cache_timeout=0),
+        name="schema-redoc",
     ),
 ]

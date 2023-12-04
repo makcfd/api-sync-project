@@ -5,7 +5,7 @@ from pathlib import Path
 from django.core.management.base import BaseCommand, CommandError
 from master_system.models import Comment, Post
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 
 
 class Command(BaseCommand):
@@ -38,6 +38,7 @@ class Command(BaseCommand):
                     Post(
                         title=object["title"],
                         body=object["body"],
+                        is_synced=True,
                     )
                 )
             elif "comments" in docname:
@@ -46,7 +47,8 @@ class Command(BaseCommand):
                         name=object["name"],
                         email=object["email"],
                         body=object["body"],
-                        post=Post.objects.get(pk=object["postId"]),
+                        is_synced=True,
+                        postId=Post.objects.get(pk=object["postId"]),
                     )
                 )
         try:

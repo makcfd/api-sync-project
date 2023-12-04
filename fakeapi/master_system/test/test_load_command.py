@@ -29,7 +29,6 @@ class CommandTestCase(TransactionTestCase):
             file_path,
             stdout=out,
         )
-        # print("After loading", Post.objects.all().count())
         self.assertIn("Loaded objects", out.getvalue())
 
     def test_command_comments_loading(self):

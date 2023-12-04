@@ -1,3 +1,26 @@
 # add ports for backend gunicorn? 
+version: '3.3'
+services:
 
+  db:
+    image: postgres:13.10
+    volumes:
+      - data_fakeapi:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
 
+  backend:
+    build:
+      context: ../
+      dockerfile: ./fakeapi/Dockerfile
+    platform: linux/amd64
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - ./.env
+
+volumes:
+  data_fakeapi:

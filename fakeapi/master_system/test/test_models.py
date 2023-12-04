@@ -2,8 +2,6 @@ from django.test import TestCase
 from ..models import Post, Comment
 from django.conf import settings
 
-POST_LENGTH = 10
-
 
 class PostModelTest(TestCase):
     @classmethod
@@ -20,7 +18,7 @@ class PostModelTest(TestCase):
             name="Test comment",
             email="comment@test.com",
             body=cls.long_text,
-            post=cls.post,
+            postId=cls.post,
         )
 
     def test_models_have_correct_object_names(self):
@@ -33,14 +31,14 @@ class PostModelTest(TestCase):
 
     def test_posts_user_default_value(self):
         """Test user id default in Post model."""
-        USER_DEFAULT_ID = 99999942
-        self.assertTrue(self.post.user == USER_DEFAULT_ID)
+        self.assertTrue(self.post.user == settings.DEFAULT_USER_ID)
 
     def test_post_model_have_correct_verbose_names(self):
         """Post model has a verbose name."""
         field_verboses = {
             "title": "Title of the post",
             "body": "Body of the post",
+            "is_synced": "Post syncronization status",
         }
         for field, expected_value in field_verboses.items():
             with self.subTest(field=field):
@@ -53,6 +51,7 @@ class PostModelTest(TestCase):
         """Comment model has a verbose name."""
         group_field_verboses = {
             "body": "Body of the comment",
+            "is_synced": "Comment syncronization status",
         }
         for field, expected_value in group_field_verboses.items():
             with self.subTest(field=field):
@@ -66,6 +65,7 @@ class PostModelTest(TestCase):
         field_help_texts = {
             "title": "Enter post title",
             "body": "Enter post text",
+            "is_synced": "JSONPlaceholder syncronization status",
         }
         for field, expected_value in field_help_texts.items():
             with self.subTest(field=field):
@@ -77,6 +77,7 @@ class PostModelTest(TestCase):
         """Comment model help_text equals to expected."""
         field_help_texts = {
             "body": "Enter comment text",
+            "is_synced": "JSONPlaceholder syncronization status",
         }
         for field, expected_value in field_help_texts.items():
             with self.subTest(field=field):

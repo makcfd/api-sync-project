@@ -16,6 +16,9 @@ For tests defaul unittests package is used. To run test execute command:
 ```
 python manage.py test;
 ```
+```
+python manage.py test master_system.test.test_comments_api
+```
 
 ### Docker commands
 ```
@@ -24,6 +27,33 @@ docker build -t fakeapi_service .
 ```
 docker run --name fakeapi_service_container --rm -p 8000:8000 fakeapi_service
 ```
+###### Staying in info folder: 
+```
+docker-compose up -d
+```
+```
+docker-compose build --no-cache && docker-compose up -d
+```
+```
+docker-compose exec backend python manage.py makemigrations
+```
+```
+docker-compose exec backend python manage.py migrate
+```
+```
+python manage.py createsuperuser --noinput --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL
+```
+```
+docker-compose exec backend python manage.py load_json_data posts
+```
+```
+docker-compose exec backend python manage.py load_json_data comments
+```
+
+### Links
+1. http://127.0.0.1/swagger/
+2. http://127.0.0.1/admin/
+
 
 ### Limitations and assumptions
 
@@ -31,7 +61,7 @@ docker run --name fakeapi_service_container --rm -p 8000:8000 fakeapi_service
 2. CRUD operations are GET, POST, PUT, PATCH, DELETE
 3. No need for Nginx and gunicorn
 4. DEBUG to True to see errors
-
+5. makemigrations is paro of CI/CD pipeline
 
 ## Tasks
 
