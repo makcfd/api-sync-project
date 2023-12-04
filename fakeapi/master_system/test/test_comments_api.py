@@ -48,7 +48,7 @@ class CommentsAPITests(APITestCase):
         }
 
     def setUp(self):
-        # TODO: can usercreation be reused?
+        # TODO: reuse the user
         self.user = User.objects.create_user(
             username="johnsnow",
             email="johnsnow@johnsnow.me",
