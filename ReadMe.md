@@ -39,16 +39,21 @@ docker-compose exec backend python manage.py load_json_data comments
 ```
 ### Run tests
 For tests defaul unittests package is used. To run test execute command:
-```
-docker-compose exec backend python manage.py test;
-```
+#### API tests:
 ```
 docker-compose exec backend python manage.py test master_system.test.test_posts_api
 ```
 ```
 docker-compose exec backend python manage.py test master_system.test.test_comments_api
 ```
-
+#### Models tests:
+```
+docker-compose exec backend python manage.py test master_system.test.test_models
+```
+#### Custom command tests:
+```
+docker-compose exec backend python manage.py test master_system.test.test_load_command
+```
 ### cUrl examples
 - Get Bearer token
 ```
@@ -69,8 +74,8 @@ curl -X POST http://127.0.0.1:8000/api/v1/posts/ \
 ```
 
 ### Links
-1. Project documentation available at the address: http://127.0.0.1/swagger/
-2. Admin panel is available at the address: http://127.0.0.1/admin/
+1. Project documentation available at the address: http://127.0.0.1:8000/swagger/
+2. Admin panel is available at the address: http://127.0.0.1:8000/admin/
 
 
 # Limitations and assumptions
